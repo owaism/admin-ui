@@ -288,6 +288,23 @@ describe AdminUI::Admin do
       it_behaves_like('common delete organization')
     end
 
+    shared_examples 'common delete organization role' do
+      it 'returns failure code due to disconnection' do
+        response = delete('/organizations/organization1/auditor/user1')
+        expect(response.is_a?(Net::HTTPInternalServerError)).to be_true
+      end
+    end
+
+    context 'delete organization role via http' do
+      it_behaves_like('common delete organization role')
+    end
+
+    context 'delete organization role via https' do
+      let(:secured_client_connection) { true }
+
+      it_behaves_like('common delete organization role')
+    end
+
     shared_examples 'common delete route' do
       it 'returns failure code due to disconnection' do
         response = delete('/routes/route1')
@@ -305,6 +322,23 @@ describe AdminUI::Admin do
       it_behaves_like('common delete route')
     end
 
+    shared_examples 'common delete space role' do
+      it 'returns failure code due to disconnection' do
+        response = delete('/spaces/space1/auditor/user1')
+        expect(response.is_a?(Net::HTTPInternalServerError)).to be_true
+      end
+    end
+
+    context 'delete space role via http' do
+      it_behaves_like('common delete space role')
+    end
+
+    context 'delete space role via https' do
+      let(:secured_client_connection) { true }
+
+      it_behaves_like('common delete space role')
+    end
+    
     shared_examples 'common manage application' do
       it 'returns failure code due to disconnection' do
         response = put('/applications/application1', '{"state":"STARTED"}')
@@ -491,8 +525,8 @@ describe AdminUI::Admin do
         verify_disconnected_view_model_items('/organization_roles_view_model')
       end
 
-      it '/organization_roles_view_model/:guid/:guid/:role returns not found' do
-        verify_not_found('/organization_roles_view_model/guid/guid/role')
+      it '/organization_roles_view_model/:guid/:role/:guid returns not found' do
+        verify_not_found('/organization_roles_view_model/guid/role/guid')
       end
 
       it '/quotas_view_model succeeds' do
@@ -556,8 +590,8 @@ describe AdminUI::Admin do
         verify_disconnected_view_model_items('/space_roles_view_model')
       end
 
-      it '/space_roles_view_model/:guid/:guid/:role returns not found' do
-        verify_not_found('/space_roles_view_model/guid/guid/role')
+      it '/space_roles_view_model/:guid/:role/:guid returns not found' do
+        verify_not_found('/space_roles_view_model/guid/role/guid')
       end
 
       it '/tasks_view_model succeeds' do
@@ -699,8 +733,8 @@ describe AdminUI::Admin do
         get_redirects_as_expected('/organization_roles_view_model')
       end
 
-      it '/organization_roles_view_model/:guid/:guid/:role redirects as expected' do
-        get_redirects_as_expected('/organization_roles_view_model/guid/guid/role')
+      it '/organization_roles_view_model/:guid/:role/:guid redirects as expected' do
+        get_redirects_as_expected('/organization_roles_view_model/guid/role/guid')
       end
 
       it '/organizations_view_model redirects as expected' do
@@ -759,8 +793,8 @@ describe AdminUI::Admin do
         get_redirects_as_expected('/space_roles_view_model')
       end
 
-      it '/space_roles_view_model/:guid/:guid/:role redirects as expected' do
-        get_redirects_as_expected('/space_roles_view_model/guid/guid/role')
+      it '/space_roles_view_model/:guid/:role/:guid redirects as expected' do
+        get_redirects_as_expected('/space_roles_view_model/guid/role/guid')
       end
 
       it '/spaces_view_model redirects as expected' do
@@ -795,8 +829,16 @@ describe AdminUI::Admin do
         delete_redirects_as_expected('/organizations/organization1')
       end
 
+      it 'deletes /organizations/:guid/:role/:guid redirects as expected' do
+        delete_redirects_as_expected('/organizations/guid/role/guid')
+      end
+
       it 'deletes /routes/:route_guid redirects as expected' do
         delete_redirects_as_expected('/routes/route1')
+      end
+
+      it 'deletes /spaces/:guid/:role/:guid redirects as expected' do
+        delete_redirects_as_expected('/spaces/guid/role/guid')
       end
 
       it 'posts /applications_view_model redirects as expected' do
