@@ -41,7 +41,7 @@ module AdminUI
       add_rows(organizations_managers, 'Manager', organization_hash, user_cc_hash, user_uaa_hash, items, hash)
       add_rows(organizations_users, 'User', organization_hash, user_cc_hash, user_uaa_hash, items, hash)
 
-      result(true, items, hash, (0..4).to_a, (0..4).to_a)
+      result(true, items, hash, (1..5).to_a, (1..5).to_a)
     end
 
     private
@@ -61,6 +61,9 @@ module AdminUI
         user_uaa = user_uaa_hash[user_cc[:guid]]
         next if user_uaa.nil?
 
+        key = "#{ organization[:guid] }/#{ user_cc[:guid] }/#{ role }"
+
+        row.push(key)
         row.push(organization[:name])
         row.push(organization[:guid])
         row.push(user_uaa[:username])
@@ -69,7 +72,6 @@ module AdminUI
 
         items.push(row)
 
-        key = "#{ organization[:guid] }/#{ user_cc[:guid] }/#{ role }"
         hash[key] =
         {
           'organization' => organization,
